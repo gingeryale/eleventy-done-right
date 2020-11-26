@@ -4,6 +4,8 @@ const sortByDisplayOrder = require('./src/utils/sort-by-display-order.js');
 const dateFilter = require('./src/filters/date-filter.js');
 const w3DateFilter = require('./src/filters/w3-date-filter.js');
 
+const rssPlugin = require('@11ty/eleventy-plugin-rss');
+
 module.exports = config => {
   // Add filters
 config.addFilter('dateFilter', dateFilter);
@@ -14,6 +16,9 @@ config.addPassthroughCopy('./src/images/');
 config.addCollection('work', collection => {
   return sortByDisplayOrder(collection.getFilteredByGlob('./src/work/*.md'));
 });
+
+// Plugins
+config.addPlugin(rssPlugin);
 
 // Returns a collection of blog posts in reverse date order
 config.addCollection('blog', collection => {
