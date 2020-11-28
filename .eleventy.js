@@ -4,6 +4,11 @@ const sortByDisplayOrder = require('./src/utils/sort-by-display-order.js');
 const dateFilter = require('./src/filters/date-filter.js');
 const w3DateFilter = require('./src/filters/w3-date-filter.js');
 
+// Transforms
+const htmlMinTransform = require('./src/transforms/html-min-transform.js');
+
+// Create a helpful production flag
+const isProduction = process.env.NODE_ENV === 'production';
 const rssPlugin = require('@11ty/eleventy-plugin-rss');
 
 module.exports = config => {
@@ -11,7 +16,12 @@ module.exports = config => {
 config.addFilter('dateFilter', dateFilter);
 config.addFilter('w3DateFilter', w3DateFilter);
 	// Set directories to pass through to the dist folder
-config.addPassthroughCopy('./src/images/');
+// config.addPassthroughCopy('./src/images/');
+// Only minify HTML if we are in production because it slows builds _right_ down
+if (isProduction) {
+  config.addTransform('htmlmin', htmlMinTransform);
+}
+
 // Returns work items, sorted by display order
 config.addCollection('work', collection => {
   return sortByDisplayOrder(collection.getFilteredByGlob('./src/work/*.md'));
